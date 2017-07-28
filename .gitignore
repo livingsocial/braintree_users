@@ -1,0 +1,7 @@
+.bundle/
+bin/
+.dump.html
+emails.txt
+*.txt
+scrape.err.log
+user.report.csv
