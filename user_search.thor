@@ -28,19 +28,21 @@ class Scraper
         page = @agent.get("#{@host}/users?merchant_id=#{@merchant_id}&page=#{page_number}")
         print "scraping page #{page_number}"
         rows = scrape_users_page(page)
-        break if rows == 0
         puts
-        page_number =+ 1
+        break if rows == 0
+        page_number += 1
       end
       scrape_roles
     end
 
     def scrape_users_page(page)
       rows = page.search('.sep tr')
+      user_count = 0
       rows.each do |row|
         begin
           cells = row.search('td')
           next if cells.empty?
+          user_count += 1
           username = cells.first.text.strip
           url = "#{@host}/#{cells.first.search('a').first.attributes['href'].value}"
           name = cells[1].text
@@ -55,7 +57,7 @@ class Scraper
           File.open('scrape.err.log', 'a') { |f| f.puts [e.message, e.backtrace].join("\n") }
         end
       end
-      rows.length
+      user_count
     end
 
     def scrape_roles
